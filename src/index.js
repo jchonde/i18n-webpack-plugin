@@ -1,7 +1,7 @@
 /*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-*/
+ MIT License http://www.opensource.org/licenses/mit-license.php
+ Author Tobias Koppers @sokra
+ */
 import ConstDependency from 'webpack/lib/dependencies/ConstDependency';
 import NullFactory from 'webpack/lib/NullFactory';
 import MissingLocalizationError from './MissingLocalizationError';
@@ -49,11 +49,12 @@ class I18nPlugin {
           let param;
           let defaultValue;
           switch (expr.arguments.length) {
+            case 3:
             case 2:
-              param = this.evaluateExpression(expr.arguments[1]);
+              param = this.evaluateExpression(expr.arguments[0]);
               if (!param.isString()) return;
               param = param.string;
-              defaultValue = this.evaluateExpression(expr.arguments[0]);
+              defaultValue = this.evaluateExpression(expr.arguments[1]);
               if (!defaultValue.isString()) return;
               defaultValue = defaultValue.string;
               break;
