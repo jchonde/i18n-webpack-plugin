@@ -94,7 +94,7 @@ class I18nPlugin {
 
             fs.appendFileSync(
               `./translations/${locale}-missing.csv`,
-              `"${param}","${defaultValue.replace(/\r?\n|\r/g, '').replace(/"/g, '""')}"\r\n`,
+              `"${param}","${defaultValue.replace(/\r?\n|\r/g, '').replace(/"/g, '""').replace(/\s{2,}/g, ' ')}"\r\n`,
             );
           }
 
