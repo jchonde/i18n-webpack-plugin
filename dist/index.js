@@ -10,6 +10,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
 
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
 var _ConstDependency = require('webpack/lib/dependencies/ConstDependency');
 
 var _ConstDependency2 = _interopRequireDefault(_ConstDependency);
@@ -56,6 +60,7 @@ var I18nPlugin = function () {
     this.functionName = this.options.functionName || '__';
     this.failOnMissing = !!this.options.failOnMissing;
     this.hideMessage = this.options.hideMessage || false;
+    this.locale = this.options.locale;
   }
 
   _createClass(I18nPlugin, [{
@@ -63,9 +68,16 @@ var I18nPlugin = function () {
     value: function apply(compiler) {
       var localization = this.localization,
           failOnMissing = this.failOnMissing,
-          hideMessage = this.hideMessage; // eslint-disable-line no-unused-vars
+          hideMessage = this.hideMessage,
+          locale = this.locale; // eslint-disable-line no-unused-vars
 
       var name = this.functionName;
+
+      try {
+        _fs2.default.unlinkSync(`./translations/${locale}-missing.csv`);
+      } catch (e) {
+        //
+      }
 
       compiler.plugin('compilation', function (compilation, params) {
         // eslint-disable-line no-unused-vars
@@ -115,6 +127,8 @@ var I18nPlugin = function () {
                 error.add(param, defaultValue);
               }
               result = defaultValue;
+
+              _fs2.default.appendFileSync(`./translations/${locale}-missing.csv`, `"${param}","${defaultValue.replace(/\r?\n|\r/g, '').replace(/"/g, '""')}"\r\n`);
             }
 
             var dep = new _ConstDependency2.default(JSON.stringify(result), expr.range);

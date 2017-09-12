@@ -2,6 +2,7 @@
  MIT License http://www.opensource.org/licenses/mit-license.php
  Author Tobias Koppers @sokra
  */
+import fs from 'fs';
 import ConstDependency from 'webpack/lib/dependencies/ConstDependency';
 import NullFactory from 'webpack/lib/NullFactory';
 import MissingLocalizationError from './MissingLocalizationError';
@@ -31,11 +32,18 @@ class I18nPlugin {
     this.functionName = this.options.functionName || '__';
     this.failOnMissing = !!this.options.failOnMissing;
     this.hideMessage = this.options.hideMessage || false;
+    this.locale = this.options.locale;
   }
 
   apply(compiler) {
-    const { localization, failOnMissing, hideMessage } = this; // eslint-disable-line no-unused-vars
+    const { localization, failOnMissing, hideMessage, locale } = this; // eslint-disable-line no-unused-vars
     const name = this.functionName;
+
+    try {
+      fs.unlinkSync(`./translations/${locale}-missing.csv`);
+    } catch (e) {
+      //
+    }
 
     compiler.plugin('compilation', (compilation, params) => { // eslint-disable-line no-unused-vars
       compilation.dependencyFactories.set(ConstDependency, new NullFactory());
@@ -83,6 +91,11 @@ class I18nPlugin {
               error.add(param, defaultValue);
             }
             result = defaultValue;
+
+            fs.appendFileSync(
+              `./translations/${locale}-missing.csv`,
+              `"${param}","${defaultValue.replace(/\r?\n|\r/g, '').replace(/"/g, '""')}"\r\n`,
+            );
           }
 
           const dep = new ConstDependency(JSON.stringify(result), expr.range);
