@@ -98,7 +98,7 @@ class I18nPlugin {
             );
           }
 
-          const dep = new ConstDependency(JSON.stringify(result), expr.range);
+          const dep = new ConstDependency(`\`${result}\``, expr.range);
           dep.loc = expr.loc;
           this.state.current.addDependency(dep);
           return true;
