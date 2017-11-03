@@ -131,7 +131,7 @@ var I18nPlugin = function () {
               _fs2.default.appendFileSync(`./translations/${locale}-missing.csv`, `"${param}","${defaultValue.replace(/\r?\n|\r/g, '').replace(/"/g, '""').replace(/\s{2,}/g, ' ')}"\r\n`);
             }
 
-            var dep = new _ConstDependency2.default(JSON.stringify(result), expr.range);
+            var dep = new _ConstDependency2.default(`\`${result.replace(/\\n/g, ' ')}\``, expr.range);
             dep.loc = expr.loc;
             this.state.current.addDependency(dep);
             return true;
